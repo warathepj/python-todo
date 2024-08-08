@@ -1,0 +1,66 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo App</title>
+</head>
+<body>
+  <h1>Add Todo</h1>
+  <form method="POST" action="/add">
+    <label for="task">Task:</label>
+    <input type="text" id="task" name="task" required><br><br>
+    
+<label for="status">Status:</label>
+    <select id="status" name="status">
+      <option value="Pending">Pending</option>
+      <option value="Completed">Completed</option>
+    </select><br><br>
+    <input type="submit" value="Add Todo">
+  </form>
+
+  <h2>Todos</h2>
+  <img src="bin.svg" alt="" >
+
+  <pre>
+    {% for todo in todos %}
+      <input 
+        type="checkbox" id="{{ todo[0] }}" 
+        onchange="updateTodoStatus(this, {{ todo[0] }})"
+      > <label for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</label>
+<!--when click templates/index.html -->
+      <!-- <img src="{{ image_url }}" alt="Bin Icon"> -->
+      <a href="/delete/{{ todo[0] }}"><img src="{{ image_url }}" alt="Bin Icon"></a>
+
+<!-- delete task from todo.db, reference file-->
+<!-- main.py, todo_functions.py -->
+      <br>
+    {% endfor %}
+    </pre>
+
+  <script>
+    function updateTodoStatus(checkbox, todoId) {
+      if (checkbox.checked) {
+        fetch('/update/' + todoId, { method: 'POST' })
+          .then(response => {
+            if (response.ok) {
+              console.log('Todo updated successfully');
+            } else {
+              console.error('Failed to update todo');
+            }
+          });
+      }
+    }
+    </script>
+
+    <style>
+      img {
+        color: black;
+
+      }
+      img:hover {
+  cursor: pointer;
+}
+
+    </style>
+</body>
+</html>
