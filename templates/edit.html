@@ -1,0 +1,8 @@
+<form method="POST" action="/update/{{ todo[0] }}">
+    <input type="text" name="task" value="{{ todo[1] }}">
+    <select name="status">
+        <option value="Pending" {% if todo[2] == "Pending" %} selected {% endif %}>Pending</option>
+        <option value="Completed" {% if todo[2] == "Completed" %} selected {% endif %}>Completed</option>
+    </select>
+    <button type="submit">Update</button>
+</form>

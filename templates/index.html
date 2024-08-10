@@ -1,42 +1,47 @@
 <!-- templates/index.html -->
+<!--from templates/index.html, color are red, blue, green,
+  random color for background-color of container div.  -->
+
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Todo App</title>
 </head>
+
 <body>
   <h1>Add Todo</h1>
   <form method="POST" action="/add">
     <label for="task">Task:</label>
     <input type="text" id="task" name="task" required><br><br>
-    
-<label for="status">Status:</label>
+
+    <label for="status">Status:</label>
     <select id="status" name="status">
       <option value="Pending">Pending</option>
       <option value="Completed">Completed</option>
     </select><br><br>
-    <input type="submit" value="Add Todo">
+    <input type="submit" value="Add Todo" id="add-button">
   </form>
 
   <h2>Todos</h2>
-  <img src="bin.svg" alt="" >
 
-  <pre>
-    {% for todo in todos %}
-      <input 
-        type="checkbox" id="{{ todo[0] }}" 
-        onchange="updateTodoStatus(this, {{ todo[0] }})"
-      > <label for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</label>
+  {% for todo in todos %}
+  <div class="container red blue green">
+  <input 
+    type="checkbox" 
+    id="{{ todo[0] }}" 
+    onchange="updateTodoStatus(this, {{ todo[0] }})"
+    {% if todo[2] == "Completed" %} checked {% endif %} 
+  > 
+  <label for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</label>
 <!--when click templates/index.html -->
-      <!-- <img src="{{ image_url }}" alt="Bin Icon"> -->
-      <a href="/delete/{{ todo[0] }}"><img src="{{ image_url }}" alt="Bin Icon"></a>
+  <a href="/edit/{{ todo[0] }}"><img src="{{ image_url1 }}" alt="Edit Icon"></a>
+  <a href="/delete/{{ todo[0] }}"><img src="{{ image_url }}" alt="Bin Icon"></a>
+  <br>
+</div>
+{% endfor %}
 
-<!-- delete task from todo.db, reference file-->
-<!-- main.py, todo_functions.py -->
-      <br>
-    {% endfor %}
-    </pre>
-
+  <p>CorgiDev</p>
   <script>
     function updateTodoStatus(checkbox, todoId) {
       if (checkbox.checked) {
@@ -50,17 +55,52 @@
           });
       }
     }
-    </script>
+  </script>
 
-    <style>
-      img {
-        color: black;
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      }
-      img:hover {
-  cursor: pointer;
-}
+    body {
+      padding: 1rem;
+      background-color: #cfc39c;
+    }
 
-    </style>
+    .container {
+      margin-bottom: 1rem;
+      padding: .3rem;
+      background-color: #e78787;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    css
+ .red { background-color: red; }
+ .blue { background-color: blue; }
+ .green { background-color: green; }
+
+    #add-button {
+      padding: .3rem;
+      background-color: #45e95b;
+    }
+
+    #add-button:hover {
+      background-color: #8fe49a;
+    }
+
+    img {
+      color: black;
+
+    }
+
+    img:hover {
+      cursor: pointer;
+    }
+  </style>
 </body>
+
 </html>

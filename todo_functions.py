@@ -19,6 +19,22 @@ def get_todos():
     conn.close()
     return todos
 
+def get_todo(todo_id):
+       conn = sqlite3.connect('todo.db')
+       cursor = conn.cursor()
+       cursor.execute("SELECT * FROM todos WHERE id=?", (todo_id,))
+       todo = cursor.fetchone()
+       conn.close()
+       return todo
+
+# create def update_todo in todo_functions.py, reference main.py, templates/index.html
+def update_todo(todo_id, task, status):
+    conn = sqlite3.connect('todo.db')
+    cursor = conn.cursor()
+    cursor.execute('''UPDATE todos SET task = ?, status = ? WHERE id = ?''', (task, status, todo_id))
+    conn.commit()
+    conn.close()
+
 def update_todo_status(todo_id, status):
   conn = sqlite3.connect('todo.db')
   cursor = conn.cursor()
