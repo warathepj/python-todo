@@ -1,4 +1,5 @@
-<!-- templates/index.html -->
+<!-- templates/index.html/ -->
+<!-- reference main.py, todo_functions.py -->
 <!--from templates/index.html, color are red, blue, green,
   random color for background-color of container div.  -->
 
@@ -6,11 +7,20 @@
 <html>
 
 <head>
-  <title>Todo App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>QuickToDo</title>
 </head>
 
 <body>
-  <h1>Add Todo</h1>
+<h1 
+  style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;"
+>QuickToDo</h1>
+<!--when click templates/index.html/ -->
+<button onclick="window.location.href='/db'">todo.db</button>
+<!-- go to /db and render all data in todo.db with pre tag -->
+<!-- reference main.py, todo_functions.py -->
+
   <form method="POST" action="/add">
     <label for="task">Task:</label>
     <input type="text" id="task" name="task" required><br><br>
@@ -23,29 +33,53 @@
     <input type="submit" value="Add Todo" id="add-button">
   </form>
 
-  <h2>Todos</h2>
+  <h2 style="margin-bottom: 1rem;">Todos</h2>
 
   {% for todo in todos %}
-  <div class="container red blue green">
-  <input 
-    type="checkbox" 
-    id="{{ todo[0] }}" 
-    onchange="updateTodoStatus(this, {{ todo[0] }})"
-    {% if todo[2] == "Completed" %} checked {% endif %} 
-  > 
-  <label for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</label>
-<!--when click templates/index.html -->
-  <a href="/edit/{{ todo[0] }}"><img src="{{ image_url1 }}" alt="Edit Icon"></a>
-  <a href="/delete/{{ todo[0] }}"><img src="{{ image_url }}" alt="Bin Icon"></a>
+<!--add right and bottom black shadow to templates/index.html -->
+  <div class="container">
+    <div class="task">
+
+      <!-- when tick on templates/index.html/ -->
+      <input
+                type="checkbox"
+                id="{{ todo[0] }}"
+                onchange="updateStatus(this, {{ todo[0] }})"
+                {% if todo[2] == "Completed" %} checked {% endif %}
+            >
+      <!-- change todo[2] in todo.db to "Completed" -->
+      <p for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</p>
+    </div>
+
+  <div class="icon">
+    <a href="/edit/{{ todo[0] }}"><img src="{{ image_url1 }}" alt="Edit Icon"></a>
+    <a href="/delete/{{ todo[0] }}"><img src="{{ image_url }}" alt="Bin Icon"></a>
+  </div>
   <br>
 </div>
 {% endfor %}
 
-  <p>CorgiDev</p>
+  <h3 
+    style="
+      margin-bottom: 1rem;
+      display: flex; align-items: center; justify-content: center;">CorgiDev</h3>
+
+      <img 
+        src="https://warathepj.github.io/js-ai-gallery/public/image/fri9.jpeg" 
+        alt="Corgi" 
+        style="
+          width: 8rem; display: block; margin-left: auto; 
+          margin-right: auto;
+          margin-bottom: 5rem;">
+
+  <footer>
+    <p>&copy; <span id="currentYear"></span> CorgiDev</p>
+  </footer>
+
   <script>
-    function updateTodoStatus(checkbox, todoId) {
+    function updateStatus(checkbox, todoId) {
       if (checkbox.checked) {
-        fetch('/update/' + todoId, { method: 'POST' })
+        fetch('/update-status/' + todoId, { method: 'POST' })
           .then(response => {
             if (response.ok) {
               console.log('Todo updated successfully');
@@ -55,6 +89,37 @@
           });
       }
     }
+
+    function updateStatus(checkbox, todoId) {
+    const status = checkbox.checked ? "Completed" : "Pending";
+    
+    fetch('/update_status', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: todoId,
+            status: status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the status text next to the checkbox
+            const statusText = checkbox.nextElementSibling;
+            statusText.textContent = statusText.textContent.replace(/- (Pending|Completed)/, `- ${status}`);
+        } else {
+            console.error('Failed to update status');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+    const currentYear = new Date().getFullYear();
+  document.getElementById("currentYear").textContent = currentYear;
   </script>
 
   <style>
@@ -62,29 +127,58 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      border: 2px solid red;
     }
 
     body {
       padding: 1rem;
+      font-size: x-large;
       background-color: #cfc39c;
     }
 
     .container {
-      margin-bottom: 1rem;
+      height: 7rem;
+      margin-bottom: 1.2rem;
       padding: .3rem;
-      background-color: #e78787;
       display: flex;
       flex-direction: row;
       align-items: center;
+      justify-content: space-around;
+      background-color: #cfaa30;
     }
 
-    css
- .red { background-color: red; }
- .blue { background-color: blue; }
- .green { background-color: green; }
+    .task {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      p {
+        width: 12rem;
+        margin-left: .1rem;
+        word-wrap: break-word;
+      }
+    }
 
+    .icon {
+      margin-right: -1.3rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+    }
+    #task {
+      height: 2rem;
+    }
+
+    #status {
+      height: 2rem;
+    }
+    
     #add-button {
-      padding: .3rem;
+      height: 3rem;
+      padding: .7rem;
+      margin-bottom: 1rem;
+      font-size: 2rem;
       background-color: #45e95b;
     }
 
@@ -92,14 +186,29 @@
       background-color: #8fe49a;
     }
 
+   input[type="checkbox"] {
+     transform: scale(2.5); /* Increase size by 2x */
+     margin-right: 1rem; /* Add some space between checkbox and label */
+   }
+
     img {
       color: black;
-
+      width: 2.3rem;
     }
 
     img:hover {
       cursor: pointer;
     }
+footer {
+  background-color: #cfc39c;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
   </style>
 </body>
 

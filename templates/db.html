@@ -1,0 +1,20 @@
+<!-- templates/db.html/ -->
+<!-- reference main.py, todo_functions.py, todo.db -->
+<!--from templates/db.html/ loop and render each array member
+  in pre tag-->
+<!-- reference main.py, todo_functions.py, todo.db -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo DB</title>
+</head>
+<body>
+  <h1>Todo DB</h1>
+  <pre>
+    {% for item in data %}
+      {{ item }}
+    {% endfor %}
+  </pre>
+  
+</body>
+</html>

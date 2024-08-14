@@ -35,10 +35,11 @@ def update_todo(todo_id, task, status):
     conn.commit()
     conn.close()
 
-def update_todo_status(todo_id, status):
+def update_todo_status(todo_id, new_status):
   conn = sqlite3.connect('todo.db')
   cursor = conn.cursor()
-  cursor.execute('''UPDATE todos SET status = ? WHERE id = ?''', (status, todo_id))
+  # cursor.execute('''UPDATE todos SET status = ? WHERE id = ?''', (status, todo_id))
+  cursor.execute('''UPDATE todos SET status = ? WHERE id = ?''', (new_status, todo_id))
   conn.commit()
   conn.close()
 

@@ -2,8 +2,9 @@
 #from /add add button for go to /, reference main.py
 import os
 
-from flask import Flask, send_file, request, render_template, url_for, flash, redirect
-from todo_functions import add_todo, get_todos, get_todo, update_todo, update_todo_status, delete_todo
+from flask import Flask, send_file, request, render_template, url_for, flash, redirect, jsonify
+# from todo_functions import add_todo, get_todos, get_todo, update_todo, update_todo_status, delete_todo
+from todo_functions import *
 
 app = Flask(__name__)
 
@@ -16,6 +17,14 @@ def index():
     # return send_file('src/index.html')
     # return send_file('src/index.html', todos=todos)
 
+@app.route('/db')
+def display_db():
+    conn = sqlite3.connect('todo.db')  # Connect to the database
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM todos")  # Execute a SELECT query
+    data = cursor.fetchall()  # Fetch all the data
+    conn.close()  # Close the connection
+    return render_template('db.html', data=data)
 
 @app.route('/add', methods=['POST'])
 def add():
@@ -40,9 +49,26 @@ def update(todo_id):
     task = request.form['task']
     status = request.form['status']
     update_todo(todo_id, task, status)  # Assuming you have an update_todo function in todo_functions.py
+    # update_todo_status(todo_id, 'Completed')  # Assuming you have this function in todo_functions.py
+
+    
     return redirect('/')
 
-  
+@app.route('/update_status', methods=['POST'])
+def update_status():
+    data = request.json
+    todo_id = data['id']
+    new_status = data['status']
+    
+    conn = sqlite3.connect('todo.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE todos SET status = ? WHERE id = ?", (new_status, todo_id))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({"success": True})
+
+
 @app.route('/delete/<int:todo_id>', methods=['GET']) 
 def delete(todo_id):
     delete_todo(todo_id)  # Call the delete function from todo_functions.py
