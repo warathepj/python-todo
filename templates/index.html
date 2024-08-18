@@ -36,8 +36,11 @@
   <h2 style="margin-bottom: 1rem;">Todos</h2>
 
   {% for todo in todos %}
-<!--add right and bottom black shadow to templates/index.html -->
+<!--from templates/index.html -->
   <div class="container">
+    <!-- if text in <p for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</p>
+    Exceeds the height of the container, automatically increase 
+    the height of the container.-->
     <div class="task">
 
       <!-- when tick on templates/index.html/ -->
@@ -127,17 +130,20 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      border: 2px solid red;
+      /* border: 2px solid red; */
     }
-
+/* in templates/index.html/ if screen width >1023 px 
+background-color is green*/ 
     body {
       padding: 1rem;
       font-size: x-large;
       background-color: #cfc39c;
-    }
+      
+}
 
     .container {
-      height: 7rem;
+      min-height: 7rem; 
+      overflow: auto;
       margin-bottom: 1.2rem;
       padding: .3rem;
       display: flex;
@@ -209,6 +215,19 @@ footer {
   width: 100%;
 }
 
+@media screen and (max-width: 345px) {
+  body {
+    background-color: rgb(144, 180, 97);
+  }
+
+  .task {
+    p {
+      width: 9rem;
+    }
+  }
+}
+
+  
   </style>
 </body>
 

@@ -1,22 +1,52 @@
+<!-- templates/edit.html/ -->
+<!-- reference main.py, todo_functions.py -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <form 
-        style="margin-top: 5rem;" method="POST" action="/update/{{ todo[0] }}">
-        <input type="text" name="task" value="{{ todo[1] }}">
-        <select name="status">
-            <option value="Pending" {% if todo[2] == "Pending" %} selected {% endif %}>Pending</option>
-            <option value="Completed" {% if todo[2] == "Completed" %} selected {% endif %}>Completed</option>
-        </select>
-        <button type="submit">Update</button>
-    </form>
+    <div class="container">
 
+        <form style="margin-top: 5rem;" method="POST" action="/update/{{ todo[0] }}">
+            <input type="text" name="task" value="{{ todo[1] }}">
+            <select name="status">
+                <option value="Pending" {% if todo[2]=="Pending" %} selected {% endif %}>Pending</option>
+                <option value="Completed" {% if todo[2]=="Completed" %} selected {% endif %}>Completed</option>
+            </select>
+
+
+            <!--from templates/edit.html/ move -->
+            <button type="submit">Update</button>
+            <!-- to new row -->
+        </form>
+    </div>
+
+    <style>
+       
+
+        form {
+            margin-top: 5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        input {
+            width: 14rem;
+            height: 2.5rem;
+        }
+
+@media (max-width: 378px) {
+    input {
+            width: 12rem;
+            /* height: 2.5rem; */
+        }
+}
+    </style>
 </body>
+
 </html>
-
-

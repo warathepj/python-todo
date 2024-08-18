@@ -1,27 +1,89 @@
+<!-- templates/add.html/ -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <h3 
-        style="
-            width: 13rem;
+    <h2 style="
+            width: 16rem;
+            margin-bottom: 4rem;
             position: absolute; top: 40%; left: 50%; 
-            transform: translate(-50%, -50%);">Todo added successfully!
-    </h3>
-<a href="/" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"> 
-       <button>Go to Home</button> 
-   </a> 
-   <style>
-    * {
-        border: 2px solid red;
+            transform: translate(-50%, -50%);
+        "
+    >
+        Todo added successfully!
+    </h2>
+    <a 
+        href="/" 
+        
+    >
+        <button>Go to Home</button>
+    </a>
+    <style>
+        /* * {
+            border: 2px solid red;
+        } */
+
+        a {
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+        }
+
+        button {
+      height: 3rem;
+      padding: .7rem;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      background-color: #45e95b;
     }
-   </style> 
+
+    button:hover {
+      background-color: #8fe49a;
+    }
+      
+/*templates/add.html/ if screen width < 378 background-color: green;*/
+@media (max-width: 378px) {
+    /* body {
+      background-color: rgb(152, 219, 152);
+    } */
+
+    a {
+            position: absolute; 
+            top: 70%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+        }
+
+        button {
+      height: 3rem;
+      width: 15rem;
+      padding: .7rem;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      background-color: #45e95b;
+    }
+  }
+
+    @media (min-width: 1024px) {
+    body {
+      background-color: green;
+    }
+
+    a {
+            position: absolute; 
+            top: 60%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+        }
+  }
+    </style>
 </body>
+
 </html>
-
-
-
