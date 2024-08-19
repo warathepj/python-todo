@@ -1,4 +1,6 @@
 # main.py
+# from main.py, all route redirect to /login
+# from main.py, make route to /login
 #from /add add button for go to /, reference main.py
 import os
 
@@ -7,6 +9,11 @@ from flask import Flask, send_file, request, render_template, url_for, flash, re
 from todo_functions import *
 
 app = Flask(__name__)
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
 
 @app.route("/")
 def index():
