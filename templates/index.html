@@ -13,13 +13,11 @@
 </head>
 
 <body>
-<h1 
-  style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;"
->QuickToDo</h1>
-<!--when click templates/index.html/ -->
-<button onclick="window.location.href='/db'">todo.db</button>
-<!-- go to /db and render all data in todo.db with pre tag -->
-<!-- reference main.py, todo_functions.py -->
+  <h1 style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">QuickToDo</h1>
+  <!--when click templates/index.html/ -->
+  <button onclick="window.location.href='/db'">todo.db</button>
+  <!-- go to /db and render all data in todo.db with pre tag -->
+  <!-- reference main.py, todo_functions.py -->
 
   <form method="POST" action="/add">
     <label for="task">Task:</label>
@@ -36,7 +34,7 @@
   <h2 style="margin-bottom: 1rem;">Todos</h2>
 
   {% for todo in todos %}
-<!--from templates/index.html -->
+  <!--from templates/index.html -->
   <div class="container">
     <!-- if text in <p for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</p>
     Exceeds the height of the container, automatically increase 
@@ -44,33 +42,25 @@
     <div class="task">
 
       <!-- when tick on templates/index.html/ -->
-      <input
-                type="checkbox"
-                id="{{ todo[0] }}"
-                onchange="updateStatus(this, {{ todo[0] }})"
-                {% if todo[2] == "Completed" %} checked {% endif %}
-            >
+      <input type="checkbox" id="{{ todo[0] }}" onchange="updateStatus(this, {{ todo[0] }})" {% if todo[2]=="Completed"
+        %} checked {% endif %}>
       <!-- change todo[2] in todo.db to "Completed" -->
       <p for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</p>
     </div>
 
-  <div class="icon">
-    <a href="/edit/{{ todo[0] }}"><img src="{{ image_url1 }}" alt="Edit Icon"></a>
-    <a href="/delete/{{ todo[0] }}"><img src="{{ image_url }}" alt="Bin Icon"></a>
+    <div class="icon">
+      <a href="/edit/{{ todo[0] }}"><img src="{{ image_url1 }}" alt="Edit Icon"></a>
+      <a href="/delete/{{ todo[0] }}"><img src="{{ image_url }}" alt="Bin Icon"></a>
+    </div>
+    <br>
   </div>
-  <br>
-</div>
-{% endfor %}
+  {% endfor %}
 
-  <h3 
-    style="
+  <h3 style="
       margin-bottom: 1rem;
       display: flex; align-items: center; justify-content: center;">CorgiDev</h3>
 
-      <img 
-        src="https://warathepj.github.io/js-ai-gallery/public/image/fri9.jpeg" 
-        alt="Corgi" 
-        style="
+  <img src="https://warathepj.github.io/js-ai-gallery/public/image/fri9.jpeg" alt="Corgi" style="
           width: 8rem; display: block; margin-left: auto; 
           margin-right: auto;
           margin-bottom: 5rem;">
@@ -94,35 +84,35 @@
     }
 
     function updateStatus(checkbox, todoId) {
-    const status = checkbox.checked ? "Completed" : "Pending";
-    
-    fetch('/update_status', {
+      const status = checkbox.checked ? "Completed" : "Pending";
+
+      fetch('/update_status', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            id: todoId,
-            status: status
+          id: todoId,
+          status: status
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
             // Update the status text next to the checkbox
             const statusText = checkbox.nextElementSibling;
             statusText.textContent = statusText.textContent.replace(/- (Pending|Completed)/, `- ${status}`);
-        } else {
+          } else {
             console.error('Failed to update status');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
 
     const currentYear = new Date().getFullYear();
-  document.getElementById("currentYear").textContent = currentYear;
+    document.getElementById("currentYear").textContent = currentYear;
   </script>
 
   <style>
@@ -132,17 +122,18 @@
       box-sizing: border-box;
       /* border: 2px solid red; */
     }
-/* in templates/index.html/ if screen width >1023 px 
-background-color is green*/ 
+
+    /* in templates/index.html/ if screen width >1023 px 
+background-color is green*/
     body {
       padding: 1rem;
       font-size: x-large;
       background-color: #cfc39c;
-      
-}
+
+    }
 
     .container {
-      min-height: 7rem; 
+      min-height: 7rem;
       overflow: auto;
       margin-bottom: 1.2rem;
       padding: .3rem;
@@ -158,6 +149,7 @@ background-color is green*/
       flex-direction: row;
       align-items: center;
       justify-content: space-around;
+
       p {
         width: 12rem;
         margin-left: .1rem;
@@ -172,6 +164,7 @@ background-color is green*/
       align-items: center;
       justify-content: space-around;
     }
+
     #task {
       height: 2rem;
     }
@@ -179,7 +172,7 @@ background-color is green*/
     #status {
       height: 2rem;
     }
-    
+
     #add-button {
       height: 3rem;
       padding: .7rem;
@@ -192,10 +185,12 @@ background-color is green*/
       background-color: #8fe49a;
     }
 
-   input[type="checkbox"] {
-     transform: scale(2.5); /* Increase size by 2x */
-     margin-right: 1rem; /* Add some space between checkbox and label */
-   }
+    input[type="checkbox"] {
+      transform: scale(2.5);
+      /* Increase size by 2x */
+      margin-right: 1rem;
+      /* Add some space between checkbox and label */
+    }
 
     img {
       color: black;
@@ -205,29 +200,28 @@ background-color is green*/
     img:hover {
       cursor: pointer;
     }
-footer {
-  background-color: #cfc39c;
-  color: white;
-  text-align: center;
-  padding: 1rem 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
 
-@media screen and (max-width: 345px) {
-  body {
-    background-color: rgb(144, 180, 97);
-  }
-
-  .task {
-    p {
-      width: 9rem;
+    footer {
+      background-color: #cfc39c;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
     }
-  }
-}
 
-  
+    @media screen and (max-width: 345px) {
+      body {
+        background-color: rgb(144, 180, 97);
+      }
+
+      .task {
+        p {
+          width: 9rem;
+        }
+      }
+    }
   </style>
 </body>
 

@@ -1,3 +1,6 @@
+<!-- templates/login.html -->
+<!--from templates/login.html when username === "1" go to /, 
+else can't login, reference main.py and todo_functions.py -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +9,17 @@
     <title>Document</title>
 </head>
 <body>
-    login
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('login') }}" method="post">
+        <input type="text" name="username" placeholder="Username">
+        <input type="submit" id="submit">
+    </form>
 </body>
 </html>
