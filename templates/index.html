@@ -1,228 +1,290 @@
-<!-- templates/index.html/ -->
-<!-- reference main.py, todo_functions.py -->
-<!--from templates/index.html, color are red, blue, green,
-  random color for background-color of container div.  -->
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuickToDo</title>
+  </head>
+  <body>
+    <h1
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+      "
+    >
+      QuickToDo
+    </h1>
+    <p>Your user number: {{ new_user }}</p>
+    <form method="POST" action="/add">
+      <label for="task">Task:</label>
+      <input type="text" id="task" name="task" required /><br /><br />
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <label for="status">Status:</label>
+      <select id="status" name="status">
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+      </select>
+      <br /><br />
+      <input type="submit" value="Add Todo" id="add-button" />
+    </form>
 
-  <title>QuickToDo</title>
-</head>
+    {% for todo in data %}
+    <div class="container">
+      <div class="task">
+        <!-- TODO: -->
+        <input type="checkbox" id="{{ todo[0] }}" onchange="updateStatus(
+        this,{{ todo[0] }}) " {% if todo[2]=="Completed" %} checked {% endif %}
+        >
 
-<body>
-  <h1 style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">QuickToDo</h1>
-  <!--when click templates/index.html/ -->
-  <button onclick="window.location.href='/db'">todo.db</button>
-  <!-- go to /db and render all data in todo.db with pre tag -->
-  <!-- reference main.py, todo_functions.py -->
+        <p for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</p>
+      </div>
 
-  <form method="POST" action="/add">
-    <label for="task">Task:</label>
-    <input type="text" id="task" name="task" required><br><br>
-
-    <label for="status">Status:</label>
-    <select id="status" name="status">
-      <option value="Pending">Pending</option>
-      <option value="Completed">Completed</option>
-    </select><br><br>
-    <input type="submit" value="Add Todo" id="add-button">
-  </form>
-
-  <h2 style="margin-bottom: 1rem;">Todos</h2>
-
-  {% for todo in todos %}
-  <!--from templates/index.html -->
-  <div class="container">
-    <!-- if text in <p for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</p>
-    Exceeds the height of the container, automatically increase 
-    the height of the container.-->
-    <div class="task">
-
-      <!-- when tick on templates/index.html/ -->
-      <input type="checkbox" id="{{ todo[0] }}" onchange="updateStatus(this, {{ todo[0] }})" {% if todo[2]=="Completed"
-        %} checked {% endif %}>
-      <!-- change todo[2] in todo.db to "Completed" -->
-      <p for="{{ todo[0] }}">{{ todo[1] }} - {{ todo[2] }}</p>
+      <div class="icon">
+        <a href="/edit/{{ todo[0] }}">
+          <img src="{{ image_url1 }}" alt="Edit Icon" />
+        </a>
+        <a href="/delete/{{ todo[0] }}">
+          <img src="{{ image_url }}" alt="Bin Icon" />
+        </a>
+      </div>
+      <br />
+    </div>
+    {% endfor %}
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <button onclick="window.location.href='/db'">todo.db</button>
+    <!-- TODO: -->
+    <div class="corgidev">
+      <h3>CorgiDev</h3>
+      <img
+        src="https://warathepj.github.io/js-ai-gallery/public/image/fri9.jpeg"
+        alt="Corgi Icon"
+      />
     </div>
 
-    <div class="icon">
-      <a href="/edit/{{ todo[0] }}"><img src="{{ image_url1 }}" alt="Edit Icon"></a>
-      <a href="/delete/{{ todo[0] }}"><img src="{{ image_url }}" alt="Bin Icon"></a>
+    <footer>
+      <p>Copyright &copy; <span id="currentYear"></span> CorgiDev</p>
+      <script>
+        const currentYear = new Date().getFullYear();
+        document.getElementById("currentYear").textContent = currentYear;
+      </script>
+    </footer>
+
+    <div id="messageModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+      </div>
     </div>
-    <br>
-  </div>
-  {% endfor %}
 
-  <h3 style="
-      margin-bottom: 1rem;
-      display: flex; align-items: center; justify-content: center;">CorgiDev</h3>
+    <script>
+      function updateStatus(checkbox, todoId) {
+        const status = checkbox.checked ? "Completed" : "Pending";
 
-  <img src="https://warathepj.github.io/js-ai-gallery/public/image/fri9.jpeg" alt="Corgi" style="
-          width: 8rem; display: block; margin-left: auto; 
-          margin-right: auto;
-          margin-bottom: 5rem;">
-
-  <footer>
-    <p>&copy; <span id="currentYear"></span> CorgiDev</p>
-  </footer>
-
-  <script>
-    function updateStatus(checkbox, todoId) {
-      if (checkbox.checked) {
-        fetch('/update-status/' + todoId, { method: 'POST' })
-          .then(response => {
-            if (response.ok) {
-              console.log('Todo updated successfully');
+        fetch("/update_status", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: todoId,
+            status: status,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Update the status text next to the checkbox
+              const statusText = checkbox.nextElementSibling;
+              statusText.textContent = statusText.textContent.replace(
+                /- (Pending|Completed)/,
+                `- ${status}`
+              );
             } else {
-              console.error('Failed to update todo');
+              console.error("Failed to update status");
             }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
           });
       }
-    }
 
-    function updateStatus(checkbox, todoId) {
-      const status = checkbox.checked ? "Completed" : "Pending";
-
-      fetch('/update_status', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: todoId,
-          status: status
-        })
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Update the status text next to the checkbox
-            const statusText = checkbox.nextElementSibling;
-            statusText.textContent = statusText.textContent.replace(/- (Pending|Completed)/, `- ${status}`);
-          } else {
-            console.error('Failed to update status');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-
-    const currentYear = new Date().getFullYear();
-    document.getElementById("currentYear").textContent = currentYear;
-  </script>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      /* border: 2px solid red; */
-    }
-
-    /* in templates/index.html/ if screen width >1023 px 
-background-color is green*/
-    body {
-      padding: 1rem;
-      font-size: x-large;
-      background-color: #cfc39c;
-
-    }
-
-    .container {
-      min-height: 7rem;
-      overflow: auto;
-      margin-bottom: 1.2rem;
-      padding: .3rem;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-      background-color: #cfaa30;
-    }
-
-    .task {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-
-      p {
-        width: 12rem;
-        margin-left: .1rem;
-        word-wrap: break-word;
+      function updateRowCount() {
+        fetch("/count_rows")
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("row-count").textContent = data.row_count;
+          });
       }
-    }
 
-    .icon {
-      margin-right: -1.3rem;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-    }
+      // Update the count every 5 seconds (5000 milliseconds)
+      setInterval(updateRowCount, 5000);
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: 2px solid red;
+      }
 
-    #task {
-      height: 2rem;
-    }
-
-    #status {
-      height: 2rem;
-    }
-
-    #add-button {
-      height: 3rem;
-      padding: .7rem;
-      margin-bottom: 1rem;
-      font-size: 2rem;
-      background-color: #45e95b;
-    }
-
-    #add-button:hover {
-      background-color: #8fe49a;
-    }
-
-    input[type="checkbox"] {
-      transform: scale(2.5);
-      /* Increase size by 2x */
-      margin-right: 1rem;
-      /* Add some space between checkbox and label */
-    }
-
-    img {
-      color: black;
-      width: 2.3rem;
-    }
-
-    img:hover {
-      cursor: pointer;
-    }
-
-    footer {
-      background-color: #cfc39c;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-
-    @media screen and (max-width: 345px) {
+      /* in templates/index.html/ if screen width >1023 px 
+background-color is green*/
       body {
-        background-color: rgb(144, 180, 97);
+        padding: 1rem;
+        font-size: x-large;
+        background-color: #cfc39c;
+      }
+
+      .container {
+        min-height: 7rem;
+        width: 18rem;
+        overflow: auto;
+        margin-bottom: 1.2rem;
+        padding: 0.3rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        background-color: #cfaa30;
       }
 
       .task {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+
         p {
-          width: 9rem;
+          width: 12rem;
+          margin-left: 0.1rem;
+          word-wrap: break-word;
+          font-size: .9rem;
         }
       }
-    }
-  </style>
-</body>
 
+      .icon {
+        width: 2rem;
+        margin-right: 7rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+
+        img {
+          color: black;
+          width: 1.7rem;
+        }
+
+        img:hover {
+          cursor: pointer;
+        }
+      }
+
+      #task {
+        height: 2rem;
+      }
+
+      #status {
+        height: 2rem;
+      }
+
+      #add-button {
+        height: 3rem;
+        padding: 0.7rem;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        background-color: #45e95b;
+      }
+
+      #add-button:hover {
+        background-color: #8fe49a;
+      }
+
+      input[type="checkbox"] {
+        /*TODO:*/
+        transform: scale(1.2);
+        /*transform: scale(2.5);*/
+        /* Increase size by 2x */
+        margin-right: 1rem;
+        /* Add some space between checkbox and label */
+      }
+
+     
+
+      footer {
+        /* background-color: #cfc39c; */
+        color: black;
+        text-align: center;
+        padding: 1rem 0;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      @media screen and (max-width: 345px) {
+        body {
+          background-color: rgb(144, 180, 97);
+        }
+
+        .task {
+          p {
+            width: 9rem;
+          }
+        }
+      }
+
+      a {
+        margin-right: 6rem;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .corgidev {
+        margin-top: 5rem;
+        text-align: center; /* Center the content horizontally */
+        display: flex; /* Make the container flexible */
+        flex-direction: column; /* Arrange elements vertically */
+        align-items: center; /* Horizontally center elements within the container */
+      }
+
+      .corgidev img {
+        width: 6rem;
+        margin-top: 10px; /* Add spacing between the heading and image */
+      }
+    </style>
+    
+  </body>
 </html>

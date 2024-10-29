@@ -14,11 +14,30 @@
   <pre >
 
   <h1>Todo DB</h1>
-  <pre>
-    {% for item in data %}
-      {{ item }}
-    {% endfor %}
-  </pre>
-  
+  <table>
+    <thead>
+      <tr>
+        {% for column in columns %}
+          <th>{{ column }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data %}
+        <tr>
+          {% for column in columns %}
+            <td>{{ row[column] }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="/" style="margin-left: 5rem; margin-top: 5rem;">Home</a>
+  <style>
+    table {
+      font-size: 1rem;
+    }
+  </style>
 </body>
 </html>

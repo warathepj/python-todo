@@ -17,9 +17,16 @@ else can't login, reference main.py and todo_functions.py -->
         {% endif %}
     {% endwith %}
 
+    <pre>Username: user</pre>
     <form action="{{ url_for('login') }}" method="post">
         <input type="text" name="username" placeholder="Username">
         <input type="submit" id="submit">
     </form>
 </body>
+<style>
+    form {
+        margin-top: 4rem;
+        margin-left: 4rem;
+    }
+</style>
 </html>
